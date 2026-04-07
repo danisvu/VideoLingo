@@ -1,4 +1,5 @@
 import requests
+from xml.sax.saxutils import escape
 from core.utils import load_key
 
 def azure_tts(text: str, save_path: str) -> None:
@@ -7,7 +8,7 @@ def azure_tts(text: str, save_path: str) -> None:
     API_KEY = load_key("azure_tts.api_key")
     voice = load_key("azure_tts.voice")
     
-    payload = f"""<speak version='1.0' xml:lang='zh-CN'><voice name='{voice}'>{text}</voice></speak>"""
+    payload = f"""<speak version='1.0' xml:lang='zh-CN'><voice name='{escape(voice)}'>{escape(text)}</voice></speak>"""
     headers = {
        'Authorization': f'Bearer {API_KEY}',
        'X-Microsoft-OutputFormat': 'riff-16khz-16bit-mono-pcm',

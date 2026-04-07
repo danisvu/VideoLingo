@@ -54,11 +54,21 @@ def download_video_section():
                 raw_name = uploaded_file.name.replace(' ', '_')
                 name, ext = os.path.splitext(raw_name)
                 clean_name = re.sub(r'[^\w\-_\.]', '', name) + ext.lower()
-                    
+
+                # Security: strip any directory component and block traversal
+                clean_name = os.path.basename(clean_name)
+                if '..' in clean_name or not clean_name:
+                    st.error(t("Invalid filename. Please rename the file and try again."))
+                    return False
+                allowed_exts = [f'.{fmt}' for fmt in load_key("allowed_video_formats") + load_key("allowed_audio_formats")]
+                if ext.lower() not in allowed_exts:
+                    st.error(f"{t('Unsupported file format')}: {ext}")
+                    return False
+
                 with open(os.path.join(OUTPUT_DIR, clean_name), "wb") as f:
                     f.write(uploaded_file.getbuffer())
 
-                if ext.lower() in load_key("allowed_audio_formats"):
+                if ext.lower() in [f'.{fmt}' for fmt in load_key("allowed_audio_formats")]:
                     convert_audio_to_video(os.path.join(OUTPUT_DIR, clean_name))
                 st.rerun()
             else:

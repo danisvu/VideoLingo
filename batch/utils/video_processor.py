@@ -49,9 +49,7 @@ def process_video(file, dubbing=False, is_retry=False):
                     subtitle=f"Attempt {attempt + 1}/3" if attempt > 0 else None,
                     border_style="blue"
                 ))
-                result = step_func()
-                if result is not None:
-                    globals().update(result)
+                step_func()
                 break
             except Exception as e:
                 if attempt == 2:

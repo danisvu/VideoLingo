@@ -173,3 +173,6 @@ runtime/
 dev/
 installer_files/
 logs/
+
+# User config — contains API keys, never commit this
+config.yaml
